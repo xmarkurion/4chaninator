@@ -12,7 +12,7 @@ public class scrapeMaster {
         this.url = link;
     }
 
-    public setLink(String link){
+    public void setLink(String link){
         this.url = link;
     }
 
@@ -20,11 +20,11 @@ public class scrapeMaster {
         WebClient webClient = new WebClient(BrowserVersion.CHROME);
 
         try {
-            HtmlPage page = webClient.getPage(this.link);
+            HtmlPage page = webClient.getPage(this.url);
 
             webClient.getCurrentWindow().getJobManager().removeAllJobs();
             webClient.close();
-            recipesFile.close();
+//            recipesFile.close();
 
         } catch (IOException e) {
             System.out.println("An error occurred: " + e);
