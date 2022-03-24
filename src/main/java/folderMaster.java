@@ -1,4 +1,8 @@
+ import java.io.IOException;
+ import java.nio.file.*;
+
 public class folderMaster {
+    private Path finallPath;
     private String fullFolderPath;
 
     public folderMaster(){
@@ -7,6 +11,14 @@ public class folderMaster {
 
     public String userDir(){
         return fullFolderPath;
+    }
+
+    public static void mkDirAt(Path way) {
+         try {
+             Files.createDirectories(way);
+         } catch (IOException exception) {
+             System.err.println("Failed to create a dir!" + exception.getMessage());
+         }
     }
 }
 
