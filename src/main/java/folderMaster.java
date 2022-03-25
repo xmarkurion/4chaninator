@@ -2,23 +2,36 @@
  import java.nio.file.*;
 
 public class folderMaster {
-    private Path finallPath;
     private String fullFolderPath;
 
     public folderMaster(){
         this.fullFolderPath = System.getProperty("user.dir");
     }
 
-    public String userDir(){
+    public String getUserDir(){
         return fullFolderPath;
     }
 
-    public static void mkDirAt(Path way) {
+    /**
+     * Creates folder inside -Resourced- folder
+     * @param folder_name <-
+     */
+    public void mkDirAt(String folder_name) {
+        Path way = Paths.get(getUserDir() + "\\Resourced\\" + folder_name);
          try {
              Files.createDirectories(way);
          } catch (IOException exception) {
              System.err.println("Failed to create a dir!" + exception.getMessage());
          }
+    }
+
+    /**
+     * Returns last part after last / of the given url
+     * @param url full url
+     * @return last part of url
+     */
+    public String urlNameProcessor(String url){
+        return url.substring( url.lastIndexOf('/') + 1 );
     }
 }
 
