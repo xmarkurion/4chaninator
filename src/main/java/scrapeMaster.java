@@ -65,7 +65,7 @@ public class scrapeMaster {
                 String recipeLink = "https:"+link.getHrefAttribute();
 
                 images.add(recipeLink);
-//              System.out.println(recipeLink);
+                System.out.println(recipeLink);
             }
             webClient.close();
             this.status = true;
