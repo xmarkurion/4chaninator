@@ -1,7 +1,9 @@
 
+import javax.imageio.IIOException;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 public class MainGUI extends JFrame {
     //Window 1
@@ -21,6 +23,7 @@ public class MainGUI extends JFrame {
     private JPanel dataPanel;
     private JTextField w2_pageTitleTextField;
     private JTextField w2_amountOfImagesJTextField;
+//    private JTextArea mainJTextArea;
 
 
     public MainGUI(String s) {
@@ -77,6 +80,7 @@ public class MainGUI extends JFrame {
 
         //Window 2 ->
 
+
     }
 
     private void setInfo(String message){
@@ -93,6 +97,16 @@ public class MainGUI extends JFrame {
         displayWindowTwo();
         w2_pageTitleTextField.setText(scrape.getUrlTitle());
         w2_amountOfImagesJTextField.setText(""+scrape.imagesAmount());
+
+        String largeTempString ="";
+        for(String item : scrape.getArrayListOfImages() ){
+            largeTempString += item + "\n";
+        }
+//        mainJTextArea.setText(largeTempString);
+        folderMaster folder = new folderMaster();
+
+//        folder.writeLogFile(largeTempString);
+
     }
 
 }

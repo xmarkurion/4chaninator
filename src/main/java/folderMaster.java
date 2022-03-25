@@ -1,11 +1,25 @@
+ import java.io.FileWriter;
  import java.io.IOException;
  import java.nio.file.*;
 
 public class folderMaster {
     private String fullFolderPath;
+    private String folderPathWithName;
 
     public folderMaster(){
         this.fullFolderPath = System.getProperty("user.dir");
+        this.folderPathWithName = "";
+    }
+
+
+    public void writeLogFile(String log) {
+        try{
+            FileWriter output = new FileWriter(folderPathWithName + "\\log.txt");
+            output.write(log);
+            output.close();
+        } catch (IOException exception) {
+            System.err.println("Failed to create a text file!" + exception.getMessage());
+        }
     }
 
     public String getUserDir(){
@@ -17,7 +31,8 @@ public class folderMaster {
      * @param folder_name <-
      */
     public void mkDirAt(String folder_name) {
-        Path way = Paths.get(getUserDir() + "\\Resourced\\" + folder_name);
+        this.folderPathWithName = getUserDir() + "\\Resourced\\" + folder_name;
+        Path way = Paths.get(folderPathWithName);
          try {
              Files.createDirectories(way);
          } catch (IOException exception) {
