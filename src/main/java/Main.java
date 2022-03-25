@@ -8,7 +8,7 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args){
-//        MainGUI app = new MainGUI("4chan Images Scraper v0.1");
+        MainGUI app = new MainGUI("4chan Images Scraper v0.1");
 
 //        scrapeMaster scrape = new scrapeMaster();
 //        ArrayList<String> imgs = scrape.getArrayListOfImages();

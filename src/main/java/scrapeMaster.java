@@ -7,6 +7,7 @@ import java.util.List;
 import java.io.IOException;
 
 public class scrapeMaster {
+    private boolean status = false;
     private String url;
     private String urlTitle;
     private ArrayList<String> images = new ArrayList<>();
@@ -40,6 +41,13 @@ public class scrapeMaster {
     public ArrayList<String> getArrayListOfImages(){return images;}
 
     /**
+     * If status true page was fully loaded and data was collected
+     * If status false page is still processing
+     * @return Status of the page scrapping
+     */
+    public boolean getStatus(){return this.status;}
+
+    /**
      * Void method getting the source
      */
     public void getData(){
@@ -59,8 +67,8 @@ public class scrapeMaster {
                 images.add(recipeLink);
 //              System.out.println(recipeLink);
             }
-
             webClient.close();
+            this.status = true;
 
         } catch (IOException e) {
             System.out.println("An error occurred: " + e);

@@ -1,29 +1,32 @@
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Objects;
 
 public class MainGUI extends JFrame {
+    //Window 1
     private JButton btn_Go;
     private JLabel JLabel_Main;
     private JTextField textField_Url;
     private JPanel mainJpanel;
     private JButton btn_Paste;
-    private JProgressBar progressBar1;
     private JLabel JLabel_Info;
     private JPanel linkPanel;
     private JPanel progressPanel;
-    private JPanel dataPanel;
     private urlValidator validate = new urlValidator();
     private clipboardMaster clipboard = new clipboardMaster();
+    private scrapeMaster scrape = new scrapeMaster();
 
+    //Window 2
+    private JPanel dataPanel;
+    private JTextField w2_pageTitleTextField;
+    private JTextField w2_amountOfImagesJTextField;
 
 
     public MainGUI(String s) {
         super(s);
         setContentPane(mainJpanel);
+        textField_Url.setText("https://boards.4channel.org/g/thread/76759434/this-board-is-for-the-discussion-of-technology");
 
 //      Image img = Toolkit.getDefaultToolkit().getImage(MainGUI.class.getResource("icon.ico"));
         java.net.URL imgUrl = getClass().getResource("icon.png");
@@ -32,11 +35,11 @@ public class MainGUI extends JFrame {
             setIconImage(icon.getImage());
         }
 
-        setSize(500,200);
+        setSize(500,130);
         setVisible(true);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        progressPanel.setVisible(false);
         dataPanel.setVisible(false);
+        JLabel_Info.setVisible(false);
 
         String clip = clipboard.getClipboard();
         if(!clip.equals("")){
@@ -47,18 +50,20 @@ public class MainGUI extends JFrame {
         btn_Go.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Btn Clicked !");
+                System.out.println("Btn paste from clipboard.");
                 String urlFieldString = textField_Url.getText();
 
                 validate.setLink(urlFieldString);
                 setInfo(""+ validate.validateURL() );
 
-                int value = (progressBar1.getValue()<=90) ? progressBar1.getValue() + 10 : 100;
-                progressBar1.setValue(value);
-                setInfo("Barr value: " + value);
-                progressPanel.setVisible(true);
-
-                if(value == 100 && validate.validateURL()){displayWindowTwo();}
+                if(validate.validateURL()){
+                    scrape.setLink(urlFieldString);
+                    scrape.getData();
+                    initializeWindow2();
+                }else{
+                    setSize(500,160);
+                    setInfo("Incorrect link");
+                }
             }
         });
 
@@ -69,16 +74,25 @@ public class MainGUI extends JFrame {
                 System.out.println("Btn Copy Clicked !");
             }
         });
+
+        //Window 2 ->
+
     }
 
     private void setInfo(String message){
+        if(!JLabel_Info.isVisible()){JLabel_Info.setVisible(true);}
         JLabel_Info.setText(message);
     }
 
     private void displayWindowTwo(){
         dataPanel.setVisible(true);
-        progressPanel.setVisible(false);
         linkPanel.setVisible(false);
+    }
+
+    private void initializeWindow2(){
+        displayWindowTwo();
+        w2_pageTitleTextField.setText(scrape.getUrlTitle());
+        w2_amountOfImagesJTextField.setText(""+scrape.imagesAmount());
     }
 
 }
