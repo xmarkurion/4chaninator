@@ -1,9 +1,7 @@
-
-import javax.imageio.IIOException;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class MainGUI extends JFrame {
     //Window 1
@@ -23,48 +21,45 @@ public class MainGUI extends JFrame {
     private JPanel dataPanel;
     private JTextField w2_pageTitleTextField;
     private JTextField w2_amountOfImagesJTextField;
+    private JButton btnBackJButton;
 //    private JTextArea mainJTextArea;
-
 
     public MainGUI(String s) {
         super(s);
         setContentPane(mainJpanel);
-        textField_Url.setText("https://boards.4channel.org/g/thread/76759434/this-board-is-for-the-discussion-of-technology");
-
 //      Image img = Toolkit.getDefaultToolkit().getImage(MainGUI.class.getResource("icon.ico"));
         java.net.URL imgUrl = getClass().getResource("icon.png");
-        if(imgUrl != null){
+        if (imgUrl != null) {
             ImageIcon icon = new ImageIcon(imgUrl);
             setIconImage(icon.getImage());
         }
 
-        setSize(500,130);
+        setSize(700, 130);
         setVisible(true);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         dataPanel.setVisible(false);
         JLabel_Info.setVisible(false);
 
         String clip = clipboard.getClipboard();
-        if(!clip.equals("")){
+        if (!clip.equals("")) {
             validate.setLink(clip);
-            if(validate.validateURL()){textField_Url.setText(clipboard.getClipboard());}
+            if (validate.validateURL()) {
+                textField_Url.setText(clipboard.getClipboard());
+            }
         }
 
         btn_Go.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Btn paste from clipboard.");
-                String urlFieldString = textField_Url.getText();
 
-                validate.setLink(urlFieldString);
-                setInfo(""+ validate.validateURL() );
+                validate.setLink(textField_Url.getText());
+                setInfo("" + validate.validateURL());
 
-                if(validate.validateURL()){
-                    scrape.setLink(urlFieldString);
-                    scrape.getData();
+                if (validate.validateURL()) {
                     initializeWindow2();
-                }else{
-                    setSize(500,160);
+                } else {
+                    setSize(700, 160);
                     setInfo("Incorrect link");
                 }
             }
@@ -77,36 +72,68 @@ public class MainGUI extends JFrame {
                 System.out.println("Btn Copy Clicked !");
             }
         });
-
         //Window 2 ->
-
-
+        btnBackJButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               displayWindowOne();
+            }
+        });
     }
 
-    private void setInfo(String message){
-        if(!JLabel_Info.isVisible()){JLabel_Info.setVisible(true);}
+    private void setInfo(String message) {
+        if (!JLabel_Info.isVisible()) {
+            JLabel_Info.setVisible(true);
+        }
         JLabel_Info.setText(message);
     }
 
-    private void displayWindowTwo(){
+    private void displayWindowTwo() {
         dataPanel.setVisible(true);
         linkPanel.setVisible(false);
     }
 
+    private void displayWindowOne(){
+        textField_Url.setText("");
+        scrape.setLink("");
+        scrape.emptyArrayList();
+        dataPanel.setVisible(false);
+        linkPanel.setVisible(true);
+    }
+
     private void initializeWindow2(){
         displayWindowTwo();
+        scrape.setLink(textField_Url.getText());
+        scrape.getData();
         w2_pageTitleTextField.setText(scrape.getUrlTitle());
-        w2_amountOfImagesJTextField.setText(""+scrape.imagesAmount());
+        w2_amountOfImagesJTextField.setText("" + scrape.imagesAmount());
 
-        String largeTempString ="";
-        for(String item : scrape.getArrayListOfImages() ){
-            largeTempString += item + "\n";
-        }
-//        mainJTextArea.setText(largeTempString);
+
         folderMaster folder = new folderMaster();
 
-//        folder.writeLogFile(largeTempString);
+        String largeTempString = scrape.getUrlTitle()+"\n";
+        largeTempString += folder.stringSpaceMaker(scrape.getUrlTitle());
 
+        largeTempString +=  scrape.getLink() + "\n";
+        largeTempString += folder.stringSpaceMaker(scrape.getLink());
+
+        folder.mkDirAt(folder.urlNameProcessor(scrape.getLink()));
+
+        for (String item : scrape.getArrayListOfImages()) {
+            if (folder.saveImage(item)) {
+                largeTempString += item + " - saved \n";
+                System.out.println(item);
+            } else {
+                largeTempString += item + " - file exist \n";
+                continue;
+            }
+            try{
+                TimeUnit.MILLISECONDS.sleep(500);
+            }catch (InterruptedException e){System.out.print("Can't Sleep need more Yerba Mate!");
+            }
+
+        }
+        folder.writeLogFile(largeTempString);
     }
 
 }

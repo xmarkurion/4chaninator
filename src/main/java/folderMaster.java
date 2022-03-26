@@ -1,5 +1,8 @@
  import java.io.FileWriter;
  import java.io.IOException;
+ import java.io.InputStream;
+ import java.net.MalformedURLException;
+ import java.net.URL;
  import java.nio.file.*;
 
 public class folderMaster {
@@ -11,6 +14,17 @@ public class folderMaster {
         this.folderPathWithName = "";
     }
 
+    /**
+     * Creating an space in length of the string
+     * @param title - String to generate space for.
+     */
+    public String stringSpaceMaker(String title){
+        String space = "";
+        for(int x=0; x <= title.length(); x++){
+            space += "=";
+        }
+        return  space + "\n\n";
+    }
 
     public void writeLogFile(String log) {
         try{
@@ -48,31 +62,25 @@ public class folderMaster {
     public String urlNameProcessor(String url){
         return url.substring( url.lastIndexOf('/') + 1 );
     }
+
+    private Path getPath(String string){
+        return Paths.get(folderPathWithName + "\\" + string.substring(string.lastIndexOf('/')+1));
+    }
+
+    public boolean saveImage(String imageURL){
+        Path full = getPath(imageURL);
+
+        if(Files.exists(full)){
+            System.err.println("File exist");
+            return false;
+        }
+            try(InputStream in = new URL(imageURL).openStream()){
+                Files.copy(in, full);
+            }catch(IOException exception){
+                System.err.println("Cannot save an image!" + exception.getMessage());
+                return false;
+            }
+            return true;
+
+    }
 }
-
-
-// package com.Markurion;
-
-// import java.io.IOException;
-// import java.nio.file.*;
-
-// public class Main {
-
-//     public static String workDir(){
-//         return System.getProperty("user.dir");
-//     }
-
-//     public static void mkDirAt(Path way){
-//         try{
-//             Files.createDirectories(way);
-//         }catch (IOException exception){
-//             System.err.println("Failed to create a dir!"+ exception.getMessage());
-//         }
-
-//     }
-
-//     public static void main(String[] args) {
-//         System.out.println(workDir());
-//         mkDirAt(Paths.get(workDir()));
-//     }
-// }
