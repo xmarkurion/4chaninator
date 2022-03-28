@@ -53,16 +53,8 @@ public class MainGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Btn Go Pressed.");
                 System.out.println(""+scrape.getStatus());
-                validate.setLink(textField_Url.getText());
                 setInfo("" + validate.validateURL());
-
-                if (validate.validateURL()) {
-                    initializeWindow2();
-                    System.out.println("Link correct");
-                } else {
-                    setSize(700, 160);
-                    setInfo("Incorrect link");
-                }
+                initializeWindow2();
             }
         });
 
@@ -78,8 +70,21 @@ public class MainGUI extends JFrame {
         btn_checkLinkButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                scrape.setLink(textField_Url.getText());
-                scrape.getData();
+                setInfo("");
+                setSize(700, 160);
+                validate.setLink(textField_Url.getText());
+
+                if (validate.validateURL()) {
+                    scrape.setLink(textField_Url.getText());
+                    System.out.println("Link correct");
+
+                    setInfo("Link correct");
+                    scrape.getData();
+                    setInfo("Found: sesewfdsdffsdsdfsfd" );
+//                    setInfo("Found: " +scrape.imagesAmount()+ "iamges. Press GO to download." );
+                } else {
+                    setInfo("Incorrect link");
+                }
             }
         });
 

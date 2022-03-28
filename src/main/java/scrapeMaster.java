@@ -88,7 +88,7 @@ public class scrapeMaster {
             webClient.close();
 
         } catch (IOException e) {
-            System.out.println("An error occurred: " + e);
+//            System.out.println("An error occurred: " + e);
         }
         this.status = true;
     }
