@@ -1,7 +1,6 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.concurrent.TimeUnit;
 
 public class MainGUI extends JFrame {
     //Window 1
@@ -22,6 +21,7 @@ public class MainGUI extends JFrame {
     private JTextField w2_pageTitleTextField;
     private JTextField w2_amountOfImagesJTextField;
     private JButton btnBackJButton;
+    private JButton btn_checkLinkButton;
 //    private JTextArea mainJTextArea;
 
     public MainGUI(String s) {
@@ -51,13 +51,14 @@ public class MainGUI extends JFrame {
         btn_Go.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Btn paste from clipboard.");
-
+                System.out.println("Btn Go Pressed.");
+                System.out.println(""+scrape.getStatus());
                 validate.setLink(textField_Url.getText());
                 setInfo("" + validate.validateURL());
 
                 if (validate.validateURL()) {
                     initializeWindow2();
+                    System.out.println("Link correct");
                 } else {
                     setSize(700, 160);
                     setInfo("Incorrect link");
@@ -70,8 +71,18 @@ public class MainGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 textField_Url.setText(clipboard.getClipboard());
                 System.out.println("Btn Copy Clicked !");
+                System.out.println(""+scrape.getStatus());
             }
         });
+
+        btn_checkLinkButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                scrape.setLink(textField_Url.getText());
+                scrape.getData();
+            }
+        });
+
         //Window 2 ->
         btnBackJButton.addActionListener(new ActionListener() {
             @Override
@@ -102,38 +113,36 @@ public class MainGUI extends JFrame {
     }
 
     private void initializeWindow2(){
-        displayWindowTwo();
-        scrape.setLink(textField_Url.getText());
-        scrape.getData();
-        w2_pageTitleTextField.setText(scrape.getUrlTitle());
-        w2_amountOfImagesJTextField.setText("" + scrape.imagesAmount());
-
-
-        folderMaster folder = new folderMaster();
-
-        String largeTempString = scrape.getUrlTitle()+"\n";
-        largeTempString += folder.stringSpaceMaker(scrape.getUrlTitle());
-
-        largeTempString +=  scrape.getLink() + "\n";
-        largeTempString += folder.stringSpaceMaker(scrape.getLink());
-
-        folder.mkDirAt(folder.urlNameProcessor(scrape.getLink()));
-
-        for (String item : scrape.getArrayListOfImages()) {
-            if (folder.saveImage(item)) {
-                largeTempString += item + " - saved \n";
-                System.out.println(item);
-            } else {
-                largeTempString += item + " - file exist \n";
-                continue;
-            }
-            try{
-                TimeUnit.MILLISECONDS.sleep(500);
-            }catch (InterruptedException e){System.out.print("Can't Sleep need more Yerba Mate!");
-            }
-
+        if(scrape.getStatus()){
+            displayWindowTwo();
+            w2_pageTitleTextField.setText(scrape.getUrlTitle());
+            w2_amountOfImagesJTextField.setText("" + scrape.imagesAmount());
         }
-        folder.writeLogFile(largeTempString);
+//
+//        folderMaster folder = new folderMaster();
+//
+//        String largeTempString = scrape.getUrlTitle()+"\n";
+//        largeTempString += folder.stringSpaceMaker(scrape.getUrlTitle());
+//        largeTempString +=  scrape.getLink() + "\n";
+//        largeTempString += folder.stringSpaceMaker(scrape.getLink());
+//
+//        folder.mkDirAt(folder.urlNameProcessor(scrape.getLink()));
+//
+//        for (String item : scrape.getArrayListOfImages()) {
+//            if (folder.saveImage(item)) {
+//                largeTempString += item + " - saved \n";
+//                System.out.println(item);
+//            } else {
+//                largeTempString += item + " - file exist \n";
+//                continue;
+//            }
+//            try{
+//                TimeUnit.MILLISECONDS.sleep(500);
+//            }catch (InterruptedException e){System.out.print("Can't Sleep need more Yerba Mate!");
+//            }
+//
+//        }
+//        folder.writeLogFile(largeTempString);
     }
 
 }

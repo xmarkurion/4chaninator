@@ -71,7 +71,6 @@ public class scrapeMaster {
      */
     public void getData() {
         WebClient webClient = new WebClient(BrowserVersion.CHROME);
-
         try {
             HtmlPage page = webClient.getPage(this.url);
             webClient.getCurrentWindow().getJobManager().removeAllJobs();
@@ -87,11 +86,11 @@ public class scrapeMaster {
 //              System.out.println(recipeLink);
             }
             webClient.close();
-            this.status = true;
 
         } catch (IOException e) {
             System.out.println("An error occurred: " + e);
         }
+        this.status = true;
     }
 
 
