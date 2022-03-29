@@ -15,7 +15,7 @@ This app requires Java 17
 
 ## GUI
 The graphic interface done in Java Swing should look like this.
-![Main menu](/readme/1.png)
+![Main menu](/readme/1.PNG)
 ![After link validation](/readme/2.PNG)
 
 
