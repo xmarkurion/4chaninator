@@ -1,17 +1,21 @@
 import javax.swing.*;
+import java.awt.*;
+import javax.swing.JScrollPane;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.TimeUnit;
 
 public class MainGUI extends JFrame {
     //Window 1
-    private JButton btn_Go;
     private JLabel JLabel_Main;
     private JTextField textField_Url;
     private JPanel mainJpanel;
+    private JPanel progressPanel;
     private JButton btn_Paste;
     private JLabel JLabel_Info;
     private JPanel linkPanel;
-    private JPanel progressPanel;
+
     private urlValidator validate = new urlValidator();
     private clipboardMaster clipboard = new clipboardMaster();
     private scrapeMaster scrape = new scrapeMaster();
@@ -22,41 +26,38 @@ public class MainGUI extends JFrame {
     private JTextField w2_amountOfImagesJTextField;
     private JButton btnBackJButton;
     private JButton btn_checkLinkButton;
-//    private JTextArea mainJTextArea;
+
+    private JTextArea outTextArea;
+    private JPanel jPanel_TextArea;
+    private JScrollPane sp;
+    private JProgressBar progressBar;
 
     public MainGUI(String s) {
         super(s);
         setContentPane(mainJpanel);
-//      Image img = Toolkit.getDefaultToolkit().getImage(MainGUI.class.getResource("icon.ico"));
+
         java.net.URL imgUrl = getClass().getResource("icon.png");
         if (imgUrl != null) {
             ImageIcon icon = new ImageIcon(imgUrl);
             setIconImage(icon.getImage());
         }
 
-        setSize(700, 130);
+        setSize(700, 160);
         setVisible(true);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         dataPanel.setVisible(false);
         JLabel_Info.setVisible(false);
+        setDefaultInfoLabel();
 
         String clip = clipboard.getClipboard();
         if (!clip.equals("")) {
             validate.setLink(clip);
             if (validate.validateURL()) {
                 textField_Url.setText(clipboard.getClipboard());
+            }else{
+                setDefaultInfoLabel();
             }
         }
-
-        btn_Go.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Btn Go Pressed.");
-                System.out.println(""+scrape.getStatus());
-                setInfo("" + validate.validateURL());
-                initializeWindow2();
-            }
-        });
 
         btn_Paste.addActionListener(new ActionListener() {
             @Override
@@ -71,17 +72,17 @@ public class MainGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setInfo("");
-                setSize(700, 160);
                 validate.setLink(textField_Url.getText());
 
                 if (validate.validateURL()) {
                     scrape.setLink(textField_Url.getText());
                     System.out.println("Link correct");
 
-                    setInfo("Link correct");
                     scrape.getData();
-                    setInfo("Found: sesewfdsdffsdsdfsfd" );
-//                    setInfo("Found: " +scrape.imagesAmount()+ "iamges. Press GO to download." );
+                    setInfo("Found: " + scrape.imagesAmount() + " images. Click Go to start download.");
+
+                    setSize(730, 650);
+                    displayWindowTwo();
                 } else {
                     setInfo("Incorrect link");
                 }
@@ -104,50 +105,82 @@ public class MainGUI extends JFrame {
         JLabel_Info.setText(message);
     }
 
-    private void displayWindowTwo() {
-        dataPanel.setVisible(true);
-        linkPanel.setVisible(false);
+    private void setDefaultInfoLabel(){
+        setInfo("Please enter a link then -> Check Link.");
     }
 
     private void displayWindowOne(){
+        setSize(700, 160);
+        outTextArea.setText("");
         textField_Url.setText("");
         scrape.setLink("");
         scrape.emptyArrayList();
         dataPanel.setVisible(false);
         linkPanel.setVisible(true);
+        setDefaultInfoLabel();
+    }
+
+    private void displayWindowTwo() {
+        initializeWindow2();
     }
 
     private void initializeWindow2(){
+        dataPanel.setVisible(true);
+        linkPanel.setVisible(false);
+
         if(scrape.getStatus()){
-            displayWindowTwo();
+            sp.setAutoscrolls(true);
+            setupDownloader();
+        }
+    }
+
+    private void setupDownloader(){
+        Runnable r1 = () -> {
             w2_pageTitleTextField.setText(scrape.getUrlTitle());
             w2_amountOfImagesJTextField.setText("" + scrape.imagesAmount());
-        }
-//
-//        folderMaster folder = new folderMaster();
-//
-//        String largeTempString = scrape.getUrlTitle()+"\n";
-//        largeTempString += folder.stringSpaceMaker(scrape.getUrlTitle());
-//        largeTempString +=  scrape.getLink() + "\n";
-//        largeTempString += folder.stringSpaceMaker(scrape.getLink());
-//
-//        folder.mkDirAt(folder.urlNameProcessor(scrape.getLink()));
-//
-//        for (String item : scrape.getArrayListOfImages()) {
-//            if (folder.saveImage(item)) {
-//                largeTempString += item + " - saved \n";
-//                System.out.println(item);
-//            } else {
-//                largeTempString += item + " - file exist \n";
-//                continue;
-//            }
-//            try{
-//                TimeUnit.MILLISECONDS.sleep(500);
-//            }catch (InterruptedException e){System.out.print("Can't Sleep need more Yerba Mate!");
-//            }
-//
-//        }
-//        folder.writeLogFile(largeTempString);
+        };
+
+        Runnable r2 = () ->{
+            folderMaster folder = new folderMaster();
+
+            String largeTempString = scrape.getUrlTitle()+"\n";
+            largeTempString += folder.stringSpaceMaker(scrape.getUrlTitle());
+            largeTempString +=  scrape.getLink() + "\n";
+            largeTempString += folder.stringSpaceMaker(scrape.getLink());
+
+            folder.mkDirAt(folder.urlNameProcessor(scrape.getLink()));
+
+            JScrollBar sb = sp.getVerticalScrollBar();
+            progressBar.setMaximum(scrape.imagesAmount());
+
+            int counter = 1;
+            for (String item : scrape.getArrayListOfImages()) {
+                if (folder.saveImage(item)) {
+                    largeTempString += item + " - saved \n";
+                    System.out.println(item);
+                    outTextArea.append("" + counter + "/" + scrape.imagesAmount() +" -> "+ item + " - saved \n");
+                    sb.setValue(sb.getMaximum());
+                    progressBar.setValue(counter);
+                    counter++;
+                } else {
+                    largeTempString += item + " - file exist \n";
+                    outTextArea.append("" + counter + "/" + scrape.imagesAmount() +" -> "+ item + " - file exist \n");
+                    sb.setValue(sb.getMaximum());
+                    progressBar.setValue(counter);
+                    counter++;
+                    continue;
+                }
+                try{
+                    TimeUnit.MILLISECONDS.sleep(500);
+                }catch (InterruptedException e){System.out.print("Can't Sleep need more Yerba Mate!");
+                }
+            }
+            outTextArea.append("\n All done....... buy me a coffee....\n");
+            folder.writeLogFile(largeTempString);
+            sb.setValue(sb.getMaximum());
+        };
+        new Thread(r1).start();
+        new Thread(r2).start();
     }
 
 }
