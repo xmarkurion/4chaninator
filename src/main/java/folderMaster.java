@@ -15,7 +15,7 @@ public class folderMaster {
     }
 
     /**
-     * Creating an space in length of the string
+     * Creating a space in length of the string
      * @param title - String to generate space for.
      */
     public String stringSpaceMaker(String title){
