@@ -1,4 +1,4 @@
 # Default ignored files
 /Resourced
-/out/artifacts/*
-/out/production/*
+/out
+
