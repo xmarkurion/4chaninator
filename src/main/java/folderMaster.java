@@ -75,7 +75,8 @@ public class folderMaster {
             return false;
         }
             try(InputStream in = new URL(imageURL).openStream()){
-                Files.copy(in, full);
+                //TODO: enable save.
+                //                Files.copy(in, full);
             }catch(IOException exception){
                 System.err.println("Cannot save an image!" + exception.getMessage());
                 return false;

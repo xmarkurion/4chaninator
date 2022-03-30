@@ -32,10 +32,12 @@ public class MainGUI extends JFrame {
     private JScrollPane sp;
     private JProgressBar progressBar;
     private JButton infoButton;
+    private JButton btnLinkFinder;
 
     public MainGUI(String s) {
         super(s);
         setContentPane(mainJpanel);
+        setLocationRelativeTo(null);
 
         java.net.URL imgUrl = getClass().getResource("icon.png");
         if (imgUrl != null) {
