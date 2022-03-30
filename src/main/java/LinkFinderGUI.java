@@ -3,11 +3,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class LinkFinderGUI extends JFrame{
+    private String dataString;
     private JButton btnAction;
     private JPanel linkJPanel;
 
     public LinkFinderGUI(){
-        super();
+        super("Link Finder");
         setContentPane(linkJPanel);
         setSize(700, 160);
         setVisible(true);
@@ -16,7 +17,12 @@ public class LinkFinderGUI extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.print("btn Action Pressed");
+                dataString = "sdfsdfsdfsdf";
             }
         });
+    }
+
+    public String getData(){
+        return this.dataString;
     }
 }

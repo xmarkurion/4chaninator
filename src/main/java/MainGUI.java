@@ -7,9 +7,11 @@ import java.net.URI;
 import java.util.concurrent.TimeUnit;
 
 public class MainGUI extends JFrame {
+    //Vars
+
     //Window 1
     private JLabel JLabel_Main;
-    private JTextField textField_Url;
+    public JTextField textField_Url;
     private JPanel mainJpanel;
     private JPanel progressPanel;
     private JButton btn_Paste;
@@ -106,9 +108,18 @@ public class MainGUI extends JFrame {
                validate.openWebpage(URI.create("https://github.com/xmarkurion/4chaninator"));
             }
         });
+
+        btnLinkFinder.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("btnInfo Pressed");
+                LinkFinderGUI link = new LinkFinderGUI();
+                setInfo(link.getData());
+            }
+        });
     }
 
-    private void setInfo(String message) {
+    public void setInfo(String message) {
         if (!JLabel_Info.isVisible()) {
             JLabel_Info.setVisible(true);
         }
