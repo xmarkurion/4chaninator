@@ -1,9 +1,9 @@
 import javax.swing.*;
-import java.awt.*;
 import javax.swing.JScrollPane;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URI;
 import java.util.concurrent.TimeUnit;
 
 public class MainGUI extends JFrame {
@@ -31,6 +31,7 @@ public class MainGUI extends JFrame {
     private JPanel jPanel_TextArea;
     private JScrollPane sp;
     private JProgressBar progressBar;
+    private JButton infoButton;
 
     public MainGUI(String s) {
         super(s);
@@ -81,7 +82,7 @@ public class MainGUI extends JFrame {
                     scrape.getData();
                     setInfo("Found: " + scrape.imagesAmount() + " images. Click Go to start download.");
 
-                    setSize(730, 650);
+                    setSize(730, 410);
                     displayWindowTwo();
                 } else {
                     setInfo("Incorrect link");
@@ -94,6 +95,13 @@ public class MainGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                displayWindowOne();
+            }
+        });
+
+        infoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               validate.openWebpage(URI.create("https://github.com/xmarkurion/4chaninator"));
             }
         });
     }
@@ -175,7 +183,8 @@ public class MainGUI extends JFrame {
                 }catch (InterruptedException e){System.out.print("Can't Sleep need more Yerba Mate!");
                 }
             }
-            outTextArea.append("\n All done....... buy me a coffee....\n");
+            outTextArea.append("\n All done..... ");
+
             folder.writeLogFile(largeTempString);
             sb.setValue(sb.getMaximum());
         };
