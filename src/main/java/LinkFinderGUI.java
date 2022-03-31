@@ -14,6 +14,7 @@ public class LinkFinderGUI extends JFrame{
 
     private JList threadList;
     private ArrayList<catalogLink> links = new ArrayList<>();
+    private ArrayList<catalogLink> selectedLinks = new ArrayList<>();
 
     public LinkFinderGUI(MainGUI main){
         super("Link Finder");
@@ -50,6 +51,9 @@ public class LinkFinderGUI extends JFrame{
             System.out.println(str);
             int itemIndex = Integer.parseInt(str.substring(0,str.indexOf("|") -1));
             System.out.println(links.get(itemIndex).getUrl());
+
+            //Adding selected links to arraylist selected links
+            selectedLinks.add(links.get(itemIndex));
         }
     }
 
