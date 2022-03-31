@@ -67,7 +67,7 @@ public class MainGUI extends JFrame {
         btn_Paste.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                textField_Url.setText(clipboard.getClipboard());
+                setTextField_UrlValue(clipboard.getClipboard());
                 System.out.println("Btn Copy Clicked !");
                 System.out.println(""+scrape.getStatus());
             }
@@ -113,10 +113,13 @@ public class MainGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("btnInfo Pressed");
-                LinkFinderGUI link = new LinkFinderGUI();
-                setInfo(link.getData());
+                LinkFinderGUI link = new LinkFinderGUI(MainGUI.this);
             }
         });
+    }
+
+    public void setTextField_UrlValue(String value){
+        textField_Url.setText(value);
     }
 
     public void setInfo(String message) {
@@ -161,7 +164,7 @@ public class MainGUI extends JFrame {
             w2_amountOfImagesJTextField.setText("" + scrape.imagesAmount());
         };
 
-        Runnable r2 = () ->{
+        Runnable r2 = () -> {
             folderMaster folder = new folderMaster();
 
             String largeTempString = scrape.getUrlTitle()+"\n";
