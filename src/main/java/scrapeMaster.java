@@ -12,6 +12,7 @@ public class scrapeMaster {
     private String url;
     private String urlTitle;
     private ArrayList<String> images = new ArrayList<>();
+    private ArrayList<catalogLink> catalogLinksArray = new ArrayList<>();
 
     public scrapeMaster() {
 //        this.url = "https://boards.4chan.org/b/thread/875043412/so-i-got-sent-a-video-of-my-girlfriend-making-out";
@@ -56,6 +57,11 @@ public class scrapeMaster {
     }
 
     /**
+     * @return Array list of object catalogLink that contains links to threads.
+     */
+    public ArrayList<catalogLink> getArrayListOfCatalogLinks(){ return catalogLinksArray; }
+
+    /**
      * If status true page was fully loaded and data was collected
      * If status false page is still processing
      *
@@ -92,6 +98,7 @@ public class scrapeMaster {
     }
 
     public void getCatalogLinks(){
+        catalogLinksArray.clear();
         WebClient webClient = new WebClient(BrowserVersion.CHROME);
         webClient.getOptions().setCssEnabled(false);
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
@@ -128,7 +135,6 @@ public class scrapeMaster {
                 //Prepare class-ID from given link
                 String classID = "meta-" + e.substring(e.lastIndexOf("/")+1);
 
-
                 //Finding image reply count
                 System.out.print("Image Reply Count: ");
                 DomNode thID = page.getElementById(classID);
@@ -140,7 +146,10 @@ public class scrapeMaster {
                 //Finding Title of the thread
                 System.out.print("Title element: ");
                 DomNode elTitle = thID.getNextElementSibling();
-                System.out.println(elTitle.asNormalizedText());
+                String stringElTitle = elTitle.asNormalizedText();
+                System.out.println(stringElTitle);
+
+                catalogLinksArray.add(new catalogLink(threadLink,stringElTitle,imageReplyCount));
             });
 
 //            DomNodeList<?> internal = domNode.getChildNodes();

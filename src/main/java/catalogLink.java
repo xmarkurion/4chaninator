@@ -1,20 +1,22 @@
 public class catalogLink {
     private String url;
-    private String name;
+    private String title;
+    private String fullName;
     private int imagesReplyCount;
 
-    public catalogLink(String url, String name, int imagesReplyCount) {
+    public catalogLink(String url, String title, int imagesReplyCount) {
         this.url = url;
-        this.name = name;
+        this.title = title;
         this.imagesReplyCount = imagesReplyCount;
+        this.fullName = "Images: " + imagesReplyCount + "| T: " + title;
     }
 
     public void setUrl(String url) {
         this.url = url;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String title) {
+        this.title = title;
     }
 
     public void setImagesReplyCount(int imagesReplyCount) {
@@ -25,11 +27,19 @@ public class catalogLink {
         return url;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
     public int getImagesReplyCount() {
         return imagesReplyCount;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 }
