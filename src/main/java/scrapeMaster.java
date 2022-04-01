@@ -107,7 +107,8 @@ public class scrapeMaster {
         webClient.getOptions().setCssEnabled(false);
 
         try {
-            String web = "https://boards.4chan.org/wg/catalog";
+//            String web = "https://boards.4chan.org/wg/catalog";
+            String web = "https://boards.4channel.org/m/catalog";
             HtmlPage page = webClient.getPage(web);
             webClient.getCurrentWindow().getJobManager().removeAllJobs();
             System.out.println(page.getPage());
