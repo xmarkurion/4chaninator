@@ -1,6 +1,5 @@
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -8,25 +7,51 @@ import java.util.List;
 
 public class LinkFinderGUI extends JFrame{
     private final DefaultListModel<String> listModel;
+//    private final DefaultListModel<String> jComboBoxModel;
     private JButton btnAction;
     private JPanel linkJPanel;
     private JPanel listPanel;
 
     private JList threadList;
+    private JComboBox comboBoxBoardSelect;
+    private DefaultListCellRenderer listRenderer;
+
+    private JPanel boardPanel;
+    private JButton btnGetListOfThreads;
     private ArrayList<catalogLink> links = new ArrayList<>();
     private ArrayList<catalogLink> selectedLinks = new ArrayList<>();
 
     public LinkFinderGUI(MainGUI main){
         super("Link Finder");
+
+        scrapeBoardMaster boardMaster = new scrapeBoardMaster();
+
         setContentPane(linkJPanel);
-        setSize(700, 160);
+        setSize(700, 560);
         setVisible(true);
 
         threadList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         listModel = new DefaultListModel<>();
         threadList.setModel(listModel);
 
-        fillListWithLinks();
+        listRenderer = new DefaultListCellRenderer();
+        listRenderer.setHorizontalAlignment(DefaultListCellRenderer.CENTER);
+        comboBoxBoardSelect.setRenderer(listRenderer);
+
+        for(String data : boardMaster.getAllLinkTitle()){
+            comboBoxBoardSelect.addItem(data);
+        }
+        comboBoxBoardSelect.setSelectedIndex(57);
+
+
+//        comboBoxBoardSelect = new JComboBox<String>(boardListJB);
+//        comboBoxBoardSelect.addItem("English");
+
+//        jComboBoxModel = new JComboBox<String>();
+//        comboBoxBoardSelect.setModel(jComboBoxModel);
+
+//        Here
+//        fillListWithLinks("https://boards.4chan.org/wg/catalog");
 
         btnAction.addActionListener(new ActionListener() {
             @Override
@@ -43,6 +68,18 @@ public class LinkFinderGUI extends JFrame{
 //                System.out.println((String) threadList.getSelectedValue());
 //            }
 //        });
+
+        btnGetListOfThreads.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println(comboBoxBoardSelect.getSelectedIndex());
+
+                String webthing = boardMaster.getAllLinkArray()[comboBoxBoardSelect.getSelectedIndex()];
+                String webThingTwo = webthing + "catalog";
+                System.out.println(webThingTwo);
+                fillListWithLinks(webThingTwo);
+            }
+        });
     }
 
     private void getSelectedElements(){
@@ -61,9 +98,9 @@ public class LinkFinderGUI extends JFrame{
         listModel.addElement(item);
     }
 
-    private void fillListWithLinks(){
+    private void fillListWithLinks(String urlLink){
         scrapeMaster scraper = new scrapeMaster();
-        scraper.getCatalogLinks();
+        scraper.getCatalogLinks(urlLink);
 
         links = scraper.getArrayListOfCatalogLinks();
         for(int i=0; i < links.size(); i++){

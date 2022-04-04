@@ -97,7 +97,7 @@ public class scrapeMaster {
         this.status = true;
     }
 
-    public void getCatalogLinks(){
+    public void getCatalogLinks(String lllink){
         catalogLinksArray.clear();
         WebClient webClient = new WebClient(BrowserVersion.CHROME);
         webClient.getOptions().setCssEnabled(false);
@@ -108,8 +108,8 @@ public class scrapeMaster {
 
         try {
 //            String web = "https://boards.4chan.org/wg/catalog";
-            String web = "https://boards.4channel.org/m/catalog";
-            HtmlPage page = webClient.getPage(web);
+//            String web = "https://boards.4channel.org/m/catalog";
+            HtmlPage page = webClient.getPage(lllink);
             webClient.getCurrentWindow().getJobManager().removeAllJobs();
             System.out.println(page.getPage());
 
