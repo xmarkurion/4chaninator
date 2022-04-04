@@ -158,7 +158,7 @@ public class MainGUI extends JFrame {
         }
     }
 
-    private void setupDownloader(){
+    public void setupDownloader(){
         Runnable r1 = () -> {
             w2_pageTitleTextField.setText(scrape.getUrlTitle());
             w2_amountOfImagesJTextField.setText("" + scrape.imagesAmount());

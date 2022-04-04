@@ -65,6 +65,7 @@ public class LinkQueGUI extends JFrame{
     private void queStart(){
         Runnable th1 = ()-> {
             mainGui.setTextField_UrlValue(queListModel.get(0));
+//           / mainGui.
         };
         new Thread(th1).start();
     }
