@@ -3,6 +3,8 @@ import com.gargoylesoftware.htmlunit.html.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import java.io.IOException;
@@ -14,10 +16,7 @@ public class scrapeMaster {
     private ArrayList<String> images = new ArrayList<>();
     private ArrayList<catalogLink> catalogLinksArray = new ArrayList<>();
 
-    public scrapeMaster() {
-//        this.url = "https://boards.4chan.org/b/thread/875043412/so-i-got-sent-a-video-of-my-girlfriend-making-out";
-//        getData();
-    }
+    public scrapeMaster() {}
 
     public void emptyArrayList(){
         images.clear();
@@ -107,8 +106,6 @@ public class scrapeMaster {
         webClient.getOptions().setCssEnabled(false);
 
         try {
-//            String web = "https://boards.4chan.org/wg/catalog";
-//            String web = "https://boards.4channel.org/m/catalog";
             HtmlPage page = webClient.getPage(lllink);
             webClient.getCurrentWindow().getJobManager().removeAllJobs();
             System.out.println(page.getPage());
@@ -151,42 +148,15 @@ public class scrapeMaster {
                 System.out.println(stringElTitle);
 
                 catalogLinksArray.add(new catalogLink(threadLink,stringElTitle,imageReplyCount));
+                catalogLinksArray.sort(Comparator.comparing(catalogLink::getImagesReplyCount).reversed());
             });
 
-//            DomNodeList<?> internal = domNode.getChildNodes();
-//            internal.forEach(e->{
-//                System.out.println(e.getByXPath("//@href"));
-//                    //System.out.println(e.getPrefix());
-//                    System.out.println(e.asNormalizedText());
-//
-//                });
-
-
-
-
-            //Multi element
-//            DomNodeList<?> domNodeList = page.querySelectorAll(".thread");
-//            domNodeList.forEach(node -> {
-//                System.out.println(node.asNormalizedText());
-//            });
-
-//            HtmlElement head = page.getHead();
-
-
-//            List<?> anchors = page.getByXPath("\"//div[@class='thread']\"");
-//            for (Object anchor : anchors) {
-//                HtmlAnchor link = (HtmlAnchor) anchor;
-//                HtmlPage hpage = (HtmlPage) anchor;
-//                String dat = hpage.asNormalizedText();
-//                System.out.println(dat);
-////                String recipeLink = "https:" + link.getHrefAttribute();
-////                images.add(recipeLink);
-//            }
             webClient.close();
         } catch (IOException e) {
             System.out.println("An error occurred: " + e);
         }
     }
+
 
 
 }
