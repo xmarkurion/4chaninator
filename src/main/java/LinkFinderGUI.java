@@ -2,6 +2,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,13 +21,16 @@ public class LinkFinderGUI extends JFrame{
 
     private JPanel boardPanel;
     private JButton btnGetListOfThreads;
+    private JButton btnOpenInBrowser;
     private ArrayList<catalogLink> links = new ArrayList<>();
     private ArrayList<catalogLink> selectedLinks = new ArrayList<>();
+    Desktop desk =Desktop.getDesktop();
 
     public LinkFinderGUI(MainGUI main){
         super("Link Finder");
 
         scrapeBoardMaster boardMaster = new scrapeBoardMaster();
+        LinkQueGUI linkQueGUI = new LinkQueGUI(main);
 
         setContentPane(linkJPanel);
         setSize(700, 560);
@@ -38,20 +44,17 @@ public class LinkFinderGUI extends JFrame{
         listRenderer.setHorizontalAlignment(DefaultListCellRenderer.CENTER);
         comboBoxBoardSelect.setRenderer(listRenderer);
 
-        for(String data : boardMaster.getAllLinkTitle()){
-            comboBoxBoardSelect.addItem(data);
+        boolean nsfw = true;
+        if(nsfw){
+            for(String data : boardMaster.getAllLinkTitle()){
+                comboBoxBoardSelect.addItem(data);
+            }
+            comboBoxBoardSelect.setSelectedIndex(57);
+        }else{
+            for(String data : boardMaster.getSafeLinkTitle()){
+                comboBoxBoardSelect.addItem(data);
+            }
         }
-        comboBoxBoardSelect.setSelectedIndex(57);
-
-
-//        comboBoxBoardSelect = new JComboBox<String>(boardListJB);
-//        comboBoxBoardSelect.addItem("English");
-
-//        jComboBoxModel = new JComboBox<String>();
-//        comboBoxBoardSelect.setModel(jComboBoxModel);
-
-//        Here
-//        fillListWithLinks("https://boards.4chan.org/wg/catalog");
 
         btnAction.addActionListener(new ActionListener() {
             @Override
@@ -59,7 +62,13 @@ public class LinkFinderGUI extends JFrame{
                 System.out.print("btn Action Pressed \n");
 //                main.setInfo("Link data transfer complete");
 //                main.setTextField_UrlValue("https://boards.4channel.org/g/thread/76759434");
+
+                selectedLinks.clear();
                 getSelectedElements();
+                selectedLinks.forEach(link -> {
+                    linkQueGUI.addItemToQue(link.getUrl());
+                });
+
             }
         });
 //        threadList.addListSelectionListener(new ListSelectionListener() {
@@ -72,14 +81,40 @@ public class LinkFinderGUI extends JFrame{
         btnGetListOfThreads.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(comboBoxBoardSelect.getSelectedIndex());
+                selectedLinks.clear();
+                String webthing = "";
+                if(nsfw){
+                    webthing = boardMaster.getAllLinkArray()[comboBoxBoardSelect.getSelectedIndex()];
+                }else{
+                    webthing =  boardMaster.getSafeLinkArray()[comboBoxBoardSelect.getSelectedIndex()];
+                }
 
-                String webthing = boardMaster.getAllLinkArray()[comboBoxBoardSelect.getSelectedIndex()];
                 String webThingTwo = webthing + "catalog";
                 System.out.println(webThingTwo);
                 fillListWithLinks(webThingTwo);
             }
         });
+
+        btnOpenInBrowser.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                getSelectedElements();
+                selectedLinks.forEach(q->{
+                    openLink(q.getUrl());
+                });
+            }
+        });
+    }
+
+    private boolean openLink(String link){
+        try {
+            URI target = new URI(link);
+            desk.browse(target);
+            return true;
+        } catch (URISyntaxException | IOException ex) {
+            ex.printStackTrace();
+            return false;
+        }
     }
 
     private void getSelectedElements(){
@@ -89,8 +124,11 @@ public class LinkFinderGUI extends JFrame{
             int itemIndex = Integer.parseInt(str.substring(0,str.indexOf("|") -1));
             System.out.println(links.get(itemIndex).getUrl());
 
-            //Adding selected links to arraylist selected links
-            selectedLinks.add(links.get(itemIndex));
+            //Check if array list already contain a lin
+            if(selectedLinks.contains(links.get(itemIndex))){}else{
+                //Adding selected links to arraylist selected links
+                selectedLinks.add(links.get(itemIndex));
+            }
         }
     }
 
@@ -102,6 +140,7 @@ public class LinkFinderGUI extends JFrame{
         scrapeMaster scraper = new scrapeMaster();
         scraper.getCatalogLinks(urlLink);
 
+        listModel.clear();
         links = scraper.getArrayListOfCatalogLinks();
         for(int i=0; i < links.size(); i++){
             listModel.addElement("" + i + " | " + links.get(i).getFullName() );

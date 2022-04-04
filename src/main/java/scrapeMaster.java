@@ -144,12 +144,19 @@ public class scrapeMaster {
                 //Finding Title of the thread
                 System.out.print("Title element: ");
                 DomNode elTitle = thID.getNextElementSibling();
-                String stringElTitle = elTitle.asNormalizedText();
+                String stringElTitle = "";
+                if(elTitle != null){
+                    stringElTitle = elTitle.asNormalizedText();
+                }else
+                    stringElTitle = "Empty";
+
                 System.out.println(stringElTitle);
 
-                catalogLinksArray.add(new catalogLink(threadLink,stringElTitle,imageReplyCount));
-                catalogLinksArray.sort(Comparator.comparing(catalogLink::getImagesReplyCount).reversed());
+                if(imageReplyCount > 0){
+                    catalogLinksArray.add(new catalogLink(threadLink,stringElTitle,imageReplyCount));
+                }
             });
+            catalogLinksArray.sort(Comparator.comparing(catalogLink::getImagesReplyCount).reversed());
 
             webClient.close();
         } catch (IOException e) {
