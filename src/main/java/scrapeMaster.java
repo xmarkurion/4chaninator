@@ -55,6 +55,10 @@ public class scrapeMaster {
         return images;
     }
 
+    public void clearArrayListOfIamges(){
+        images.clear();
+    }
+
     /**
      * @return Array list of object catalogLink that contains links to threads.
      */

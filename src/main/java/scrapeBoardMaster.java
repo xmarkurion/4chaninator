@@ -37,7 +37,6 @@ public class scrapeBoardMaster {
                         unSafe.add(data);
                     }
                 }
-
             }
             webClient.close();
 

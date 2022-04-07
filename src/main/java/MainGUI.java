@@ -64,6 +64,7 @@ public class MainGUI extends JFrame {
             }
         }
 
+        //Window 1
         btn_Paste.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -118,6 +119,24 @@ public class MainGUI extends JFrame {
         });
     }
 
+    /**
+     * Click the check link button that will allow que manager to work.
+     */
+    public void clickCheckButton(){
+        btn_checkLinkButton.doClick();
+    }
+
+    /**
+     * Click the back button
+     */
+    public void clickBackButton(){
+        btnBackJButton.doClick();
+    }
+
+    public int progressBarValue(){
+        return progressBar.getValue();
+    }
+
     public void setTextField_UrlValue(String value){
         textField_Url.setText(value);
     }
@@ -160,11 +179,13 @@ public class MainGUI extends JFrame {
 
     public void setupDownloader(){
         Runnable r1 = () -> {
+            sleeep(100);
             w2_pageTitleTextField.setText(scrape.getUrlTitle());
             w2_amountOfImagesJTextField.setText("" + scrape.imagesAmount());
         };
 
         Runnable r2 = () -> {
+            sleeep(100);
             folderMaster folder = new folderMaster();
 
             String largeTempString = scrape.getUrlTitle()+"\n";
@@ -194,18 +215,32 @@ public class MainGUI extends JFrame {
                     counter++;
                     continue;
                 }
-                try{
-                    TimeUnit.MILLISECONDS.sleep(500);
-                }catch (InterruptedException e){System.out.print("Can't Sleep need more Yerba Mate!");
-                }
+                sleeep(500);
             }
-            outTextArea.append("\n All done..... ");
+            outTextArea.append("\n Done.....  \n \n");
 
             folder.writeLogFile(largeTempString);
             sb.setValue(sb.getMaximum());
+
+//            scrape.clearArrayListOfIamges();
+            sleeep(500);
+//            displayWindowOne();
         };
-        new Thread(r1).start();
-        new Thread(r2).start();
+
+        //        new Thread(r1).start();
+        //        new Thread(r2).start();
+
+        Thread run1 = new Thread(r1);
+        Thread run2 = new Thread(r2);
+        run1.start();
+        run2.start();
+    }
+
+    public void sleeep(int time_in_miliseconds){
+        try{
+            TimeUnit.MILLISECONDS.sleep(time_in_miliseconds);
+        }catch (InterruptedException e){System.out.print("Can't Sleep need more Yerba Mate!");
+        }
     }
 
 }

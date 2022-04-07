@@ -6,7 +6,5 @@ public class checkApp {
         scrapeBoardMaster board = new scrapeBoardMaster();
         //folderMaster folder = new folderMaster();
 
-
-
     }
 }

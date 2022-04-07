@@ -30,7 +30,8 @@ public class LinkFinderGUI extends JFrame{
         super("Link Finder");
 
         scrapeBoardMaster boardMaster = new scrapeBoardMaster();
-        LinkQueGUI linkQueGUI = new LinkQueGUI(main);
+//        LinkQueGUI linkQueGUI = new LinkQueGUI(main);
+        LinkQueGUI linkQueGUI = LinkQueGUI.getInstance(main);
 
         setContentPane(linkJPanel);
         setSize(700, 560);
@@ -68,7 +69,6 @@ public class LinkFinderGUI extends JFrame{
                 selectedLinks.forEach(link -> {
                     linkQueGUI.addItemToQue(link.getUrl());
                 });
-
             }
         });
 //        threadList.addListSelectionListener(new ListSelectionListener() {
@@ -124,9 +124,8 @@ public class LinkFinderGUI extends JFrame{
             int itemIndex = Integer.parseInt(str.substring(0,str.indexOf("|") -1));
             System.out.println(links.get(itemIndex).getUrl());
 
-            //Check if array list already contain a lin
-            if(selectedLinks.contains(links.get(itemIndex))){}else{
-                //Adding selected links to arraylist selected links
+            //Check if array list already contain a link
+            if(!(selectedLinks.contains(links.get(itemIndex)))){
                 selectedLinks.add(links.get(itemIndex));
             }
         }

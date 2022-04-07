@@ -15,7 +15,7 @@ known to every one imageboard. If inside the thread there are webm's or gifs the
 3. You can also use a link finder to find your links.
 
 ### Linkfinder
-1. When you ready select from list on left an theard name and press "Gat List of Threads" to fetch data.
+1. When you ready select from list on left an theard name and press "Get List of Threads" to fetch data.
 2. Select what you want ( with ctrl you can multi select ) -> ctrl plus click
 3. And when ready press "Action Que" 
 4. If you want add more just select another theard from list and repeat step 1 to 3.
@@ -39,7 +39,17 @@ The graphic interface done in Java Swing should look like this.
 
 ![After link validation](/readme/2.PNG)
 
+## Changelog
+V.01 - Basic scraping func
+V.1.0 - Progress bar
+v.1.5 - Link finder 
+v.1.6 - Que Manager.
+v.1.7 - Working que manager
 
+## TO DO
+- Use singlenton to create only one instance of Que Manager.
+- Finish so que works and w8 for download to finish before it will start new element.
+- 
 
 
 

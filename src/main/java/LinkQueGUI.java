@@ -1,8 +1,11 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.concurrent.TimeUnit;
 
 public class LinkQueGUI extends JFrame{
+    private static LinkQueGUI INSTANCE;
+    private boolean elementFinish = false;
     private final DefaultListModel<String> queListModel;
     private JPanel mainJpanel;
     private JPanel listJpanel;
@@ -14,8 +17,8 @@ public class LinkQueGUI extends JFrame{
     private JTextField amountOfLinksField;
     private MainGUI mainGui;
 
-    public LinkQueGUI(MainGUI main){
-        super("Que Manager que que que");
+    private LinkQueGUI(MainGUI main){
+        super("Que Manager - The Singleton One");
         this.mainGui = main;
 
         setContentPane(mainJpanel);
@@ -51,6 +54,30 @@ public class LinkQueGUI extends JFrame{
         });
     }
 
+    /**
+     * Singleton use - to make sure only one object LinkQueGUI could be created.
+     * @param mainGui
+     * @return
+     */
+    public static LinkQueGUI getInstance(MainGUI mainGui){
+        if(INSTANCE == null){
+            INSTANCE = new LinkQueGUI(mainGui);
+        }
+        return INSTANCE;
+    }
+
+    public static boolean getInstanceStatus(MainGUI mainGui){
+        if(INSTANCE == null){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    public void setelementFinish(boolean value){
+        this.elementFinish = value;
+    }
+
     public void addItemToQue(String item){
         if(!queListModel.contains(item)){
             queListModel.addElement(item);
@@ -62,11 +89,23 @@ public class LinkQueGUI extends JFrame{
         amountOfLinksField.setText(""+queListModel.getSize());
     }
 
+//    private void queStart(){
+//        Runnable th1 = ()-> {
+//            mainGui.setTextField_UrlValue(queListModel.get(0));
+//            mainGui.clickCheckButton();
+//        };
+//        new Thread(th1).start();
+//    }
+
     private void queStart(){
-        Runnable th1 = ()-> {
-            mainGui.setTextField_UrlValue(queListModel.get(0));
-//           / mainGui.
-        };
-        new Thread(th1).start();
+       for(int x=0; x<queListModel.size(); x++){
+
+           this.elementFinish = false;
+           mainGui.setTextField_UrlValue(queListModel.get(x));
+           mainGui.clickCheckButton();
+
+       }
+
+
     }
 }
