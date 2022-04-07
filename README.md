@@ -48,23 +48,19 @@ The graphic interface done in Java Swing should look like this.
 ![Que](/readme/4.png)
 
 ## Changelog
-V.01 - Basic scraping func
-V.1.0 - Progress bar
-v.1.5 - Link finder 
-v.1.6 - Que Manager.
-v.1.7 - Working que manager
-v.1.8 - Que batch mainly working.
+* V.01 - Basic scraping func <br>
+* V.1.0 - Progress bar <br>
+* v.1.5 - Link finder <br>
+* v.1.6 - Que Manager. <br>
+* v.1.7 - Working que manager <br>
+* v.1.8 - Que batch mainly working. <br>
 
 ## TO DO
 - All up to date for now.
 
 ## Future
-Please consider voluntary donation.
-<form action="https://www.paypal.com/donate" method="post" target="_top">
-<input type="hidden" name="hosted_button_id" value="3YSHKXRHQWCAJ" />
-<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal" alt="Donate with PayPal button" />
-<img alt="" border="0" src="https://www.paypal.com/en_IE/i/scr/pixel.gif" width="1" height="1" />
-</form>
+[Please consider voluntary donation](https://www.paypal.com/donate/?hosted_button_id=3YSHKXRHQWCAJ).
+
 
 
 
