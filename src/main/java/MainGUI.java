@@ -7,9 +7,11 @@ import java.net.URI;
 import java.util.concurrent.TimeUnit;
 
 public class MainGUI extends JFrame {
+    //Vars
+
     //Window 1
     private JLabel JLabel_Main;
-    private JTextField textField_Url;
+    public JTextField textField_Url;
     private JPanel mainJpanel;
     private JPanel progressPanel;
     private JButton btn_Paste;
@@ -32,10 +34,13 @@ public class MainGUI extends JFrame {
     private JScrollPane sp;
     private JProgressBar progressBar;
     private JButton infoButton;
+    private JButton btnLinkFinder;
 
     public MainGUI(String s) {
         super(s);
+        setResizable(false);
         setContentPane(mainJpanel);
+        setLocationRelativeTo(null);
 
         java.net.URL imgUrl = getClass().getResource("icon.png");
         if (imgUrl != null) {
@@ -60,10 +65,11 @@ public class MainGUI extends JFrame {
             }
         }
 
+        //Window 1
         btn_Paste.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                textField_Url.setText(clipboard.getClipboard());
+                setTextField_UrlValue(clipboard.getClipboard());
                 System.out.println("Btn Copy Clicked !");
                 System.out.println(""+scrape.getStatus());
             }
@@ -104,9 +110,46 @@ public class MainGUI extends JFrame {
                validate.openWebpage(URI.create("https://github.com/xmarkurion/4chaninator"));
             }
         });
+
+        btnLinkFinder.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("btnInfo Pressed");
+                LinkFinderGUI link = new LinkFinderGUI(MainGUI.this);
+
+                if(LinkQueGUI.getInstanceStatus(MainGUI.this)){
+                    LinkQueGUI que = LinkQueGUI.getInstance(MainGUI.this);
+                    if(!que.isShowing()){
+                        que.show();
+                    }
+                }
+            }
+        });
     }
 
-    private void setInfo(String message) {
+    /**
+     * Click the check link button that will allow que manager to work.
+     */
+    public void clickCheckButton(){
+        btn_checkLinkButton.doClick();
+    }
+
+    /**
+     * Click the back button
+     */
+    public void clickBackButton(){
+        btnBackJButton.doClick();
+    }
+
+    public int progressBarValue(){
+        return progressBar.getValue();
+    }
+
+    public void setTextField_UrlValue(String value){
+        textField_Url.setText(value);
+    }
+
+    public void setInfo(String message) {
         if (!JLabel_Info.isVisible()) {
             JLabel_Info.setVisible(true);
         }
@@ -142,13 +185,15 @@ public class MainGUI extends JFrame {
         }
     }
 
-    private void setupDownloader(){
+    public void setupDownloader(){
         Runnable r1 = () -> {
+            sleeep(100);
             w2_pageTitleTextField.setText(scrape.getUrlTitle());
             w2_amountOfImagesJTextField.setText("" + scrape.imagesAmount());
         };
 
-        Runnable r2 = () ->{
+        Runnable r2 = () -> {
+            sleeep(100);
             folderMaster folder = new folderMaster();
 
             String largeTempString = scrape.getUrlTitle()+"\n";
@@ -178,18 +223,28 @@ public class MainGUI extends JFrame {
                     counter++;
                     continue;
                 }
-                try{
-                    TimeUnit.MILLISECONDS.sleep(500);
-                }catch (InterruptedException e){System.out.print("Can't Sleep need more Yerba Mate!");
-                }
+                sleeep(500);
             }
-            outTextArea.append("\n All done..... ");
+            outTextArea.append("\n Done.....  \n \n");
 
             folder.writeLogFile(largeTempString);
             sb.setValue(sb.getMaximum());
+
+//            scrape.clearArrayListOfIamges();
+            sleeep(500);
+//            displayWindowOne();
         };
-        new Thread(r1).start();
-        new Thread(r2).start();
+
+                new Thread(r1).start();
+                new Thread(r2).start();
+
+    }
+
+    public void sleeep(int time_in_miliseconds){
+        try{
+            TimeUnit.MILLISECONDS.sleep(time_in_miliseconds);
+        }catch (InterruptedException e){System.out.print("Can't Sleep need more Yerba Mate!");
+        }
     }
 
 }

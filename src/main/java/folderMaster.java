@@ -4,6 +4,8 @@
  import java.net.MalformedURLException;
  import java.net.URL;
  import java.nio.file.*;
+ import java.time.LocalDateTime;
+ import java.time.format.DateTimeFormatter;
 
 public class folderMaster {
     private String fullFolderPath;
@@ -24,6 +26,12 @@ public class folderMaster {
             space += "=";
         }
         return  space + "\n\n";
+    }
+
+    public String nowDateString(){
+        LocalDateTime time = LocalDateTime.now();
+        DateTimeFormatter timeFormatted = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        return timeFormatted.format(time);
     }
 
     public void writeLogFile(String log) {
@@ -60,7 +68,13 @@ public class folderMaster {
      * @return last part of url
      */
     public String urlNameProcessor(String url){
-        return url.substring( url.lastIndexOf('/') + 1 );
+//        return url.substring( url.lastIndexOf('/') + 1 );
+        String threadID = url.substring( url.lastIndexOf('/') + 1 );
+        String categoryName ="";
+        categoryName = url.substring(0,url.lastIndexOf("/"));
+        categoryName = categoryName.substring(0,categoryName.lastIndexOf("/"));
+        categoryName = categoryName.substring(categoryName.lastIndexOf("/")+1);
+        return categoryName + "\\" + threadID;
     }
 
     private Path getPath(String string){
@@ -75,7 +89,8 @@ public class folderMaster {
             return false;
         }
             try(InputStream in = new URL(imageURL).openStream()){
-                Files.copy(in, full);
+                //TODO: enable save.
+                                Files.copy(in, full);
             }catch(IOException exception){
                 System.err.println("Cannot save an image!" + exception.getMessage());
                 return false;
