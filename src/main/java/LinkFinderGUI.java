@@ -28,6 +28,7 @@ public class LinkFinderGUI extends JFrame{
 
     public LinkFinderGUI(MainGUI main){
         super("Link Finder");
+        setResizable(false);
 
         scrapeBoardMaster boardMaster = new scrapeBoardMaster();
 //        LinkQueGUI linkQueGUI = new LinkQueGUI(main);
@@ -45,7 +46,7 @@ public class LinkFinderGUI extends JFrame{
         listRenderer.setHorizontalAlignment(DefaultListCellRenderer.CENTER);
         comboBoxBoardSelect.setRenderer(listRenderer);
 
-        boolean nsfw = true;
+        boolean nsfw = false;
         if(nsfw){
             for(String data : boardMaster.getAllLinkTitle()){
                 comboBoxBoardSelect.addItem(data);

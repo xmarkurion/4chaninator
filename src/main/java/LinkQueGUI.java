@@ -1,13 +1,15 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.concurrent.TimeUnit;
+
 
 public class LinkQueGUI extends JFrame{
     private static LinkQueGUI INSTANCE;
-    private boolean elementFinish = false;
     private final DefaultListModel<String> queListModel;
-    private JPanel mainJpanel;
+    private int queConter = 0;
+
+    private scrapeMaster scrapeMaster = new scrapeMaster();
+
     private JPanel listJpanel;
     private JList listQUE;
     private JPanel btnJpanel;
@@ -15,15 +17,28 @@ public class LinkQueGUI extends JFrame{
     private JButton btnDeleteSelected;
     private JButton btnDeleteAll;
     private JTextField amountOfLinksField;
+    private JPanel progressJpanel;
+    private JPanel Jpanel_TextArea;
+    private JTextArea outTextArea;
+    private JProgressBar progressBar;
+    private JScrollPane sp;
+    private JPanel masterJpanel;
+    private JProgressBar totalProgressBar;
     private MainGUI mainGui;
 
     private LinkQueGUI(MainGUI main){
         super("Que Manager - The Singleton One");
         this.mainGui = main;
+        setResizable(false);
 
-        setContentPane(mainJpanel);
-        setSize(700, 250);
+//        setContentPane(mainJpanel);
+        setContentPane(masterJpanel);
+        setSize(700, 500);
         setVisible(true);
+
+        progressJpanel.setVisible(true);
+        progressJpanel.repaint();
+        revalidate();
 
         listQUE.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         queListModel = new DefaultListModel<>();
@@ -49,6 +64,8 @@ public class LinkQueGUI extends JFrame{
         btnDownloadSelected.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                totalProgressBar.setValue(0);
+                progressBar.setValue(0);
                 queStart();
             }
         });
@@ -74,10 +91,6 @@ public class LinkQueGUI extends JFrame{
         }
     }
 
-    public void setelementFinish(boolean value){
-        this.elementFinish = value;
-    }
-
     public void addItemToQue(String item){
         if(!queListModel.contains(item)){
             queListModel.addElement(item);
@@ -89,23 +102,73 @@ public class LinkQueGUI extends JFrame{
         amountOfLinksField.setText(""+queListModel.getSize());
     }
 
-//    private void queStart(){
-//        Runnable th1 = ()-> {
-//            mainGui.setTextField_UrlValue(queListModel.get(0));
-//            mainGui.clickCheckButton();
-//        };
-//        new Thread(th1).start();
-//    }
-
     private void queStart(){
-       for(int x=0; x<queListModel.size(); x++){
+        System.out.println("queListModel = " + this.queConter + "/" + queListModel.size());
 
-           this.elementFinish = false;
-           mainGui.setTextField_UrlValue(queListModel.get(x));
-           mainGui.clickCheckButton();
-
-       }
-
-
+        if(this.queConter < queListModel.size()){
+            totalProgressBar.setMaximum(queListModel.size());
+            oneThread(queListModel.get(this.queConter));
+        }else{
+            System.out.println("Que Finished.");
+            queListModel.clear();
+            updateAmountLabel();
+            this.queConter = 0;
+        }
     }
+
+    private void oneThread(String link){
+        scrapeMaster.setLink(link);
+        scrapeMaster.getData();
+
+        Runnable r1 = () -> {
+            folderMaster folder = new folderMaster();
+
+            String largeTempString = scrapeMaster.getUrlTitle()+"\n";
+            largeTempString += folder.stringSpaceMaker(scrapeMaster.getUrlTitle());
+            largeTempString +=  scrapeMaster.getLink() + "\n";
+            largeTempString += folder.stringSpaceMaker(scrapeMaster.getLink());
+
+            String date = "Date: " + folder.nowDateString() + "\n";
+            largeTempString += date;
+            largeTempString += folder.stringSpaceMaker(date);
+
+            folder.mkDirAt(folder.urlNameProcessor(link));
+
+            JScrollBar sb = sp.getVerticalScrollBar();
+            progressBar.setMaximum(scrapeMaster.imagesAmount());
+
+            int counter = 1;
+            for(String item : scrapeMaster.getArrayListOfImages()){
+                if(folder.saveImage(item)){
+                    largeTempString += item + " - saved \n";
+                    outTextArea.append("" + counter + "/" + scrapeMaster.imagesAmount() +" -> "+ item + " - saved \n");
+
+                    // Auto scroll down
+                    sb.setValue(sb.getMaximum());
+                    progressBar.setValue(counter);
+                    counter++;
+                }else {
+                    largeTempString += item + " - file exist \n";
+                    outTextArea.append("" + counter + "/" + scrapeMaster.imagesAmount() +" -> "+ item + " - file exist \n");
+                    sb.setValue(sb.getMaximum());
+                    progressBar.setValue(counter);
+                    counter++;
+                    continue;
+                }
+                mainGui.sleeep(500);
+            }
+            outTextArea.append("\n Done.....  \n \n");
+            folder.writeLogFile(largeTempString);
+            sb.setValue(sb.getMaximum());
+
+            scrapeMaster.emptyArrayList();
+            mainGui.sleeep(500);
+
+            this.queConter++;
+            totalProgressBar.setValue(this.queConter);
+            queStart();
+        };
+        new Thread(r1).start();
+    }
+
 }

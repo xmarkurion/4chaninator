@@ -38,6 +38,7 @@ public class MainGUI extends JFrame {
 
     public MainGUI(String s) {
         super(s);
+        setResizable(false);
         setContentPane(mainJpanel);
         setLocationRelativeTo(null);
 
@@ -115,6 +116,13 @@ public class MainGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("btnInfo Pressed");
                 LinkFinderGUI link = new LinkFinderGUI(MainGUI.this);
+
+                if(LinkQueGUI.getInstanceStatus(MainGUI.this)){
+                    LinkQueGUI que = LinkQueGUI.getInstance(MainGUI.this);
+                    if(!que.isShowing()){
+                        que.show();
+                    }
+                }
             }
         });
     }
@@ -227,13 +235,9 @@ public class MainGUI extends JFrame {
 //            displayWindowOne();
         };
 
-        //        new Thread(r1).start();
-        //        new Thread(r2).start();
+                new Thread(r1).start();
+                new Thread(r2).start();
 
-        Thread run1 = new Thread(r1);
-        Thread run2 = new Thread(r2);
-        run1.start();
-        run2.start();
     }
 
     public void sleeep(int time_in_miliseconds){
